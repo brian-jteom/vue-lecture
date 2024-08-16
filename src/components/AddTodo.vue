@@ -1,8 +1,18 @@
 <template>
-    <div>
-      <input v-model="newTodo" placeholder="Add a new to-do" @keyup.enter="submitTodo" />
-      <button @click="submitTodo">Add</button>
-    </div>
+    <v-row class="mb-3">
+      <v-col>
+        <v-text-field
+          v-model="newTodo"
+          label="Add a new to-do"
+          outlined
+          dense
+          @keyup.enter="submitTodo"
+        />
+      </v-col>
+      <v-col cols="auto">
+        <v-btn color="primary" @click="submitTodo">Add</v-btn>
+      </v-col>
+    </v-row>
   </template>
   
   <script>
@@ -17,7 +27,7 @@
       submitTodo() {
         if (this.newTodo.trim()) {
           this.$emit('add-todo', this.newTodo);
-          this.newTodo = ''; // 입력 필드 초기화
+          this.newTodo = '';
         }
       }
     }

@@ -1,13 +1,20 @@
 <template>
-  <h1>Vue.js To-Do App</h1>
-  <add-todo @add-todo="addTodo" />
-  <to-do-list :todos="todos" @remove-todo="removeTodo" @save-todos="saveTodos" />
+  <v-app>
+    <v-container>
+      <v-row>
+        <v-col>
+          <h1 class="text-center">Vue.js To-Do App</h1>
+          <AddTodo @add-todo="addTodo" />
+          <ToDoList :todos="todos" @remove-todo="removeTodo" @save-todos="saveTodos" />
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
 import AddTodo from './components/AddTodo.vue';
 import ToDoList from './components/ToDoList.vue';
-
 
 export default {
   name: 'App',
@@ -39,16 +46,11 @@ export default {
       localStorage.setItem('todos', JSON.stringify(this.todos));
     }
   }
-}
+};
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+.text-center {
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
 }
 </style>
