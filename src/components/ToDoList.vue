@@ -13,7 +13,7 @@
             <template v-slot:prepend>
               <v-checkbox
                 v-model="todo.completed"
-                @change="saveTodos"
+                @click.stop="toggleTodoStatus({ index, completed: !todo.completed })"
                 hide-details
               />
             </template>
@@ -33,33 +33,19 @@
 
 <script>
 import AddTodo from './AddTodo.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ToDoList',
   components: { AddTodo },
-  data() {
-    return {
-      todos: []
-    }
-  },
-  mounted() {
-    const savedTodos = localStorage.getItem('todos')
-    if (savedTodos) {
-      this.todos = JSON.parse(savedTodos)
-    }
+  computed: {
+    ...mapGetters(['todos'])  // Vuex에서 todos 상태를 가져옵니다.
   },
   methods: {
-    addTodo(newTodo) {
-      this.todos.push({ text: newTodo, completed: false })
-      this.saveTodos()
-    },
-    removeTodo(index) {
-      this.todos.splice(index, 1)
-      this.saveTodos()
-    },
-    saveTodos() {
-      localStorage.setItem('todos', JSON.stringify(this.todos))
-    }
+    ...mapActions(['addTodo', 'removeTodo', 'toggleTodoStatus']),  // Vuex 액션들을 가져옵니다.
+  },
+  created() {
+    this.$store.dispatch('loadTodos')  // Vuex 스토어에서 할 일을 로드합니다.
   }
 }
 </script>
