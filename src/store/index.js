@@ -1,57 +1,14 @@
-import { createStore } from 'vuex'
+// store/index.js
+
+import { createStore } from 'vuex';
+import todos from './modules/todos';
+import posts from './modules/posts';
+
 
 const store = createStore({
-  state: {
-    todos: []
-  },
-  mutations: {
-    setTodos(state, todos) {
-      state.todos = todos;
-    },
-    addTodo(state, todo) {
-      state.todos.push(todo);
-    },
-    removeTodo(state, index) {
-      if (index >= 0 && index < state.todos.length) {
-        state.todos.splice(index, 1);
-      }
-    },
-    updateTodoStatus(state, { index, completed }) {
-      if (index >= 0 && index < state.todos.length) {
-        state.todos[index].completed = completed;
-      }
-    }
-  },
-  actions: {
-    loadTodos({ commit }) {
-      const savedTodos = localStorage.getItem('todos');
-      if (savedTodos) {
-        commit('setTodos', JSON.parse(savedTodos));
-      }
-    },
-    saveTodos({ state }) {
-      localStorage.setItem('todos', JSON.stringify(state.todos));
-    },
-    addTodo({ commit, dispatch }, todoText) {
-      const newTodo = { text: todoText, completed: false };
-      commit('addTodo', newTodo);
-      dispatch('saveTodos');
-    },
-    removeTodo({ commit, dispatch }, index) {
-      commit('removeTodo', index);
-      dispatch('saveTodos');
-    },
-    toggleTodoStatus({ commit, dispatch }, payload) {
-      const { index, completed } = payload;
-      console.log('toggleTodoStatus', index, completed);
-      commit('updateTodoStatus', { index, completed });
-      dispatch('saveTodos');
-    }
-  },
-  getters: {
-    todos(state) {
-      return state.todos;
-    }
+  modules: {
+    todos,
+    posts
   }
 });
 
