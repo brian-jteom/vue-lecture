@@ -1,63 +1,88 @@
-
-
+import postService from '../../services/postService';
 
 const state = {
-  posts: []
-}
+  posts: [],
+  postDetail: null, // 추가된 부분
+};
 
 const mutations = {
-  setPosts(state, posts) {
+  SET_POSTS(state, posts) {
     state.posts = posts;
   },
-  addPost(state, post) {
+  SET_POST_DETAIL(state, post) { // 추가된 부분
+    state.postDetail = post;
+  },
+  ADD_POST(state, post) {
     state.posts.push(post);
   },
-  removePost(state, index) {
-    if (index >= 0 && index < state.posts.length) {
-      state.posts.splice(index, 1);
+  UPDATE_POST(state, updatedPost) {
+    const index = state.posts.findIndex(post => post.id === updatedPost.id);
+    if (index !== -1) {
+      state.posts.splice(index, 1, updatedPost);
     }
   },
-  updatePostStatus(state, { index, completed }) {
-    if (index >= 0 && index < state.posts.length) {
-      state.posts[index].completed = completed;
-    }
-  }
-}
+  DELETE_POST(state, postId) {
+    state.posts = state.posts.filter(post => post.id !== postId);
+  },
+};
 
 const actions = {
-  loadPosts({ commit }) {
-    const savedPosts = localStorage.getItem('posts');
-    if (savedPosts) {
-      commit('setPosts', JSON.parse(savedPosts));
+  async loadPosts({ commit }) {
+    try {
+      const response = await postService.getPosts();
+      commit('SET_POSTS', response.data);
+    } catch (error) {
+      console.error('Failed to load posts:', error);
     }
   },
-  savePosts({ state }) {
-    localStorage.setItem('posts', JSON.stringify(state.posts));
+  async loadPostDetail({ commit }, postId) { // 추가된 부분
+    try {
+      const response = await postService.getPostById(postId);
+      commit('SET_POST_DETAIL', response.data);
+    } catch (error) {
+      console.error('Failed to load post detail:', error);
+    }
   },
-  addPost({ commit, dispatch }, postText) {
-    const newPost = { text: postText, completed: false };
-    commit('addPost', newPost);
-    dispatch('savePosts');
+  async addPost({ commit }, postTitle) {
+    try {
+      const newPost = { title: postTitle, completed: false };
+      const response = await postService.createPost(newPost);
+      commit('ADD_POST', response.data);
+    } catch (error) {
+      console.error('Failed to add post:', error);
+    }
   },
-  removePost({ commit, dispatch }, index) {
-    commit('removePost', index);
-    dispatch('savePosts');
+  async updatePost({ commit }, post) {
+    try {
+      const response = await postService.updatePost(post.id, post);
+      commit('UPDATE_POST', response.data);
+    } catch (error) {
+      console.error('Failed to update post:', error);
+    }
   },
-  togglePostStatus({ commit, dispatch }, payload) {
-    commit('updatePostStatus', payload);
-    dispatch('savePosts');
-  }
-}
+  async deletePost({ commit }, postId) {
+    try {
+      await postService.deletePost(postId);
+      commit('DELETE_POST', postId);
+    } catch (error) {
+      console.error('Failed to delete post:', error);
+    }
+  },
+};
 
 const getters = {
   posts(state) {
     return state.posts;
-  }
-}
+  },
+  postDetail(state) { // 추가된 부분
+    return state.postDetail;
+  },
+};
 
 export default {
+  namespaced: true,
   state,
   mutations,
   actions,
-  getters
+  getters,
 };
