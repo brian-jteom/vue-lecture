@@ -9,7 +9,7 @@ import PostDetail from '@/components/PostDetail.vue'
 const routes = [
     { path: '/', name: 'Home', component: ToDoList, meta: { requiresAuth: true }  },
     { path: '/login', name: 'Login', component: Login },
-    { path: '/register', name: 'Register', component: Register, meta: { requiresAuth: true }  },
+    { path: '/register', name: 'Register', component: Register },
     { path: '/post', name: 'PostList', component: PostList, meta: { requiresAuth: true }  },
     { path: '/todo/:id', name: 'ToDoDetail', component: ToDoDetail, props: true, meta: { requiresAuth: true }  },
     { path: '/post/:id', name: 'PostDetail', component: PostDetail, props: true, meta: { requiresAuth: true }  },
