@@ -26,6 +26,13 @@
             </template>
           </v-list-item>
         </v-list>
+
+        <!-- 페이징 UI -->
+        <v-pagination
+          v-model="currentPage"
+          :length="totalPages"
+          @input="fetchTodos"
+        />
       </v-col>
     </v-row>
   </v-container>
@@ -40,8 +47,16 @@ export default {
   components: { AddTodo },
   data() {
     return {
-      todos: []
+      todos: [],
+      currentPage: 1,    // 현재 페이지 번호 (1부터 시작)
+      totalPages: 1,     // 총 페이지 수
+      pageSize: 10       // 페이지당 할 일 개수
     };
+  },
+  watch: {
+    currentPage() {
+      this.fetchTodos();
+    }
   },
   created() {
     this.fetchTodos();  // 컴포넌트가 생성될 때 할 일을 로드합니다.
@@ -49,8 +64,9 @@ export default {
   methods: {
     async fetchTodos() {
       try {
-        const response = await todoService.getTodos();
-        this.todos = response.data;
+        const response = await todoService.getTodos(this.currentPage - 1, this.pageSize);
+        this.todos = response.data.content;  // Page 객체의 content 필드에서 데이터 추출
+        this.totalPages = response.data.totalPages;
       } catch (error) {
         console.error('Error fetching todos:', error);
       }
@@ -59,7 +75,7 @@ export default {
       try {
         const newTodo = { title: todoTitle, completed: false };
         const response = await todoService.createTodo(newTodo);
-        this.todos.push(response.data);
+        this.fetchTodos(); // 새로운 할 일이 추가되면 다시 로드
       } catch (error) {
         console.error('Error adding todo:', error);
       }
@@ -68,7 +84,7 @@ export default {
       try {
         const updatedTodo = { ...todo, completed: !todo.completed };
         await todoService.updateTodo(todo.id, updatedTodo);
-        this.todos = this.todos.map(t => t.id === todo.id ? updatedTodo : t);
+        this.fetchTodos(); // 할 일 상태가 변경되면 다시 로드
       } catch (error) {
         console.error('Error updating todo:', error);
       }
@@ -76,7 +92,7 @@ export default {
     async removeTodo(id) {
       try {
         await todoService.deleteTodo(id);
-        this.todos = this.todos.filter(todo => todo.id !== id);
+        this.fetchTodos(); // 할 일이 삭제되면 다시 로드
       } catch (error) {
         console.error('Error deleting todo:', error);
       }

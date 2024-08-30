@@ -1,8 +1,8 @@
 import apiClient from './api';
 
 export default {
-  getTodos() {
-    return apiClient.get('/todos');
+  getTodos(page = 0, size = 10) {
+    return apiClient.get(`/todos?page=${page}&size=${size}`);
   },
   
   getTodoById(id) {
