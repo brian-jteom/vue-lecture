@@ -16,5 +16,10 @@ export default {
       password: password,
       authority: 'USER'
     });
+  },
+  loginWithGoogle(token) {
+    console.log(token)
+    // 서버로 Google OAuth 토큰을 보내서 사용자 정보를 처리하는 로직
+    return apiClient.post('/auth/google', { token });
   }
 };

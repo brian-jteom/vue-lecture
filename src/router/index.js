@@ -5,11 +5,13 @@ import ToDoList from '../components/ToDoList.vue'
 import ToDoDetail from '../components/ToDoDetail.vue'
 import PostList from '@/components/PostList.vue'
 import PostDetail from '@/components/PostDetail.vue'
+import OauthCallback from '@/components/OauthCallback.vue'
 
 const routes = [
     { path: '/', name: 'Home', component: ToDoList, meta: { requiresAuth: true }  },
     { path: '/login', name: 'Login', component: Login },
     { path: '/register', name: 'Register', component: Register },
+    { path: '/oauth2/callback', name: 'OauthCallback', component: OauthCallback },
     { path: '/post', name: 'PostList', component: PostList, meta: { requiresAuth: true }  },
     { path: '/todo/:id', name: 'ToDoDetail', component: ToDoDetail, props: true, meta: { requiresAuth: true }  },
     { path: '/post/:id', name: 'PostDetail', component: PostDetail, props: true, meta: { requiresAuth: true }  },

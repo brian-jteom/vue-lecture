@@ -10,7 +10,7 @@ const apiClient = axios.create({
 // 요청 인터셉터를 추가하여 토큰을 헤더에 삽입
 apiClient.interceptors.request.use((config) => {
     // 로그인 및 회원가입 요청은 토큰을 추가하지 않음
-    if (!config.url.includes('/auth/login') && !config.url.includes('/auth/register')) {
+    if (!config.url.includes('/auth/')) {
         const token = localStorage.getItem('token');
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
